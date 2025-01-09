@@ -54,7 +54,7 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
         run: echo ${{steps.cypress.outcome}} > result.txt
 
       - name: Crear artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cypress-results
           path: results.txt # Ruta al archivo 
@@ -72,7 +72,7 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
       #     npm install
 
       - name: Obtenir artefacte de Cypress
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: cypress-results  # Nom de l'artefacte creat anteriorment
 
