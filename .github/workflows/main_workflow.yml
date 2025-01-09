@@ -43,7 +43,7 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
         run: npm install
 
       - name: Cypress run
-        uses: cypress-io/github-actions@v5
+        uses: cypress-io/github-action@v5
         with: 
           config-file: cypress.json
           build: npm run build
