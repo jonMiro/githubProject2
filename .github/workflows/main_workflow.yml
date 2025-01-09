@@ -6,7 +6,7 @@ on:
       - main  # Rama que va a utilitzar els jobs
 
 jobs: #Definim cada job y el sistema que utilitzará amb els pasos
-  Linter_job:
+  Linter_job: #Chequea el codi y ens trau els errors que pot haver
     runs-on: ubuntu-latest  
     steps:
       - name: Checkout codi
