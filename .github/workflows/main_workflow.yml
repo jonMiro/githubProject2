@@ -101,3 +101,28 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
           vercel_org_id: ${{ secrets.VERCEL_ORG_ID }}  # ID de la organización en Vercel
           vercel_alias: ${{ secrets.VERCEL_ALIAS }}  # Alias del dominio
 
+  Notification_job:
+    runs-on: ubuntu-latest
+    needs: [Linter_job, Cypress_job, Add_badge_job, Deploy_job]  #Necesitem tots els jobs anteriors
+    if: always()  # S' executa sempre encara que fallen altres jobs
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v2
+
+      - name: Send Notification Email
+        uses: peter-evans/send-mail@v2
+        with:
+          server: smtp.gmail.com  # Servidor SMTP (Gmail)
+          port: 587  # Puerto SMTP
+          username: ${{ secrets.EMAIL_USERNAME }}  # Nombre de usuario secreto
+          password: ${{ secrets.EMAIL_PASSWORD }}  # Contraseña secreto github
+          to: ${{ secrets.EMAIL_RECIPIENT }}  # Dirección de correo secreto
+          subject: "Resultat del workflow executat"
+          body: |
+            S'ha realitzat un push en la branca main que ha provocat l'execució del workflow {{ github.workflow }} amb els següents resultats:
+            
+            - **linter_job**: ${{ job.status }} 
+            - **cypress_job**: ${{ needs.Cypress_job.result }} 
+            - **add_badge_job**: ${{ needs.Add_badge_job.result }} 
+            - **deploy_job**: ${{ needs.Deploy_job.result }}
+
