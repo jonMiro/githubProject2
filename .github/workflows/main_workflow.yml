@@ -107,7 +107,7 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
 
   Notification_job:
     runs-on: ubuntu-latest
-    needs: [Linter_job, Cypress_job, Add_badge_job, Deploy_job]  #Necesitem tots els jobs anteriors
+    needs: [Cypress_job, Add_badge_job, Deploy_job]  #Necesitem tots els jobs anteriors afegir linter
     if: always()  # S' executa sempre encara que fallen altres jobs
     steps:
       - name: Checkout código
