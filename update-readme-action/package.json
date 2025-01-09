@@ -1,8 +1,0 @@
-{
-    "name": "update-readme-action",
-    "version": "1.0.0",
-    "main": "index.js",
-    "dependencies": {
-        "@actions/core": "^1.11.1"
-    }
-}

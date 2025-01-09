@@ -5,5 +5,5 @@ inputs:
     description: "Resultat dels tests de Cypress"
     required: true
 runs:
-  using: "node16"
-  main: "index.js"
+  using: "node20"  #gastem 20 si no va cambia a 16
+  main: "dist/index.js"
