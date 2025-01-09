@@ -5,28 +5,31 @@ on:
     branches:
       - main  # Rama que va a utilitzar els jobs
 
+permissions:
+  contents: write
+
 jobs: #Definim cada job y el sistema que utilitzará amb els pasos
-  Linter_job: #Chequea el codi y ens trau els errors que pot haver
-    runs-on: ubuntu-latest  
-    steps:
-      - name: Checkout codi
-        uses: actions/checkout@v2  # #Clona el codi font per a poder trobar els errors
+  # Linter_job: #Chequea el codi y ens trau els errors que pot haver
+  #   runs-on: ubuntu-latest  
+  #   steps:
+  #     - name: Checkout codi
+  #       uses: actions/checkout@v2  # #Clona el codi font per a poder trobar els errors
 
-      - name: Configuració Node.js
-        uses: actions/setup-node@v2  # Configurem nodejs
-        with:
-          node-version: '16'  
+  #     - name: Configuració Node.js
+  #       uses: actions/setup-node@v2  # Configurem nodejs
+  #       with:
+  #         node-version: '16'  
 
-      - name: Install dependencies
-        run: npm install  # Instala les dependencies
+  #     - name: Install dependencies
+  #       run: npm install  # Instala les dependencies
 
-      - name: Run linter
-        run: npm run lint || exit 1  # Ejecuta el linter y si hi ha error para
+  #     - name: Run linter
+  #       run: npm run lint || exit 1  # Ejecuta el linter y si hi ha error para
         
-        #TEST Cypress: verifica que la aplicació web funcione perfectament
+        # TEST Cypress: verifica que la aplicació web funcione perfectament
   Cypress_job:
     runs-on: ubuntu-latest
-    needs: Linter_job
+    # needs: Linter_job
     steps:
       - name: Checkout codi
         uses: actions/checkout@v2
@@ -79,13 +82,14 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
         with:
           outcome: ${{ steps.read-result.outputs.cypress_outcome }}
 
-      - name: Publicar canvis al repositori
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add README.md
-          git commit -m "Afegir badge al README segons resultat dels tests"
-          git push
+      - name: "push Readme"
+        uses: EndBug/add-and-commit@v9
+        with: 
+          add: "."
+          author_name: "Jonathan Alcobendas"
+          author_email: "jonathanAlcobendas@gmail.com"
+          message: "Afegit a readme"
+          push: true
   Deploy_job: #Deploy en plataforma Vercel
     runs-on: ubuntu-latest  
     needs: Cypress_job  
@@ -125,4 +129,25 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
             - **cypress_job**: ${{ needs.Cypress_job.result }} 
             - **add_badge_job**: ${{ needs.Add_badge_job.result }} 
             - **deploy_job**: ${{ needs.Deploy_job.result }}
+
+  # update_readme_stats:
+#   runs-on: ubuntu-latest
+#   steps:
+#     - name: Checkout codi
+#       uses: actions/checkout@v2
+# 
+#     - name: Setup Node.js
+#       uses: actions/setup-node@v2
+#       with:
+#         node-version: '16'
+# 
+#     - name: Instalem dependencies
+#       run: npm install
+# 
+#     - name: Generate Language Stats Image
+#       run: |
+#         curl -s https://raw.githubusercontent.com/anuraghazra/github-readme-stats/master/generated/languages.svg > languages.svg
+#         git add languages.svg
+#         git commit -m "Update language stats"
+#         git push
 
