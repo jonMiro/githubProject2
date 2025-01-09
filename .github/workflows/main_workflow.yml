@@ -81,7 +81,7 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
         run: echo "::set-output name=cypress_outcome::$(cat results.txt)"
 
       - name: Actualitzar el README.md
-        uses: ./update-readme-action  # Cridem a la GitHub Action pròpia
+        uses: ./.github/actions/update-readme-action  # Cridem a la GitHub Action pròpia
         with:
           outcome: ${{ steps.read-result.outputs.cypress_outcome }}
 
