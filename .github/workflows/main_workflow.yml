@@ -66,10 +66,10 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
       - name: Checkout codi
         uses: actions/checkout@v4
       
-      - name: Install dependencies for custom action
-        run: |
-          cd ./update-readme-action
-          npm install
+      # - name: Install dependencies for custom action
+      #   run: |
+      #     cd ./update-readme-action
+      #     npm install
 
       - name: Obtenir artefacte de Cypress
         uses: actions/download-artifact@v3
