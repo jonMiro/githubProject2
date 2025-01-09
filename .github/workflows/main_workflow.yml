@@ -22,3 +22,33 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
 
       - name: Run linter
         run: npm run lint || exit 1  # Ejecuta el linter y si hi ha error para
+        
+        #TEST Cypress: verifica que la aplicació web funcione perfectament
+  Cypress_job:
+    runs-on: ubuntu-latest
+    needs: Linter_job
+    steps:
+      - name: Checkout codi
+        uses: actions/checkout@v2
+
+      - name: Configuració Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Iniciar el servidor #per a que funcione cypress iniciem el servidor
+        run: npm run dev &
+        env:
+          CI: true
+
+      - name: Iniciar Cypress tests
+        run: npm run cypress -- --reporter=json > results.txt || true #fem que genere el txt
+
+      - name: Crear artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-results
+          path: results.txt # Ruta al archivo 
