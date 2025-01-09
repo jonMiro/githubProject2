@@ -52,3 +52,32 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
         with:
           name: cypress-results
           path: results.txt # Ruta al archivo 
+
+  Add_badge_job:
+    runs-on: ubuntu-latest
+    needs: Cypress_job  # Aquest job dependrà de Cypress_job
+    steps:
+      - name: Checkout codi
+        uses: actions/checkout@v2
+
+      - name: Obtenir artefacte de Cypress
+        uses: actions/download-artifact@v3
+        with:
+          name: cypress-results  # Nom de l'artefacte creat anteriorment
+
+      - name: Generar output
+        id: read-result
+        run: echo "::set-output name=cypress_outcome::$(cat results.txt)"
+
+      - name: Actualitzar el README.md
+        uses: ./update-readme-action  # Cridem a la GitHub Action pròpia
+        with:
+          outcome: ${{ steps.read-result.outputs.cypress_outcome }}
+
+      - name: Publicar canvis al repositori
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add README.md
+          git commit -m "Afegir badge al README segons resultat dels tests"
+          git push
