@@ -32,7 +32,7 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
     # needs: Linter_job
     steps:
       - name: Checkout codi
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Configuració Node.js
         uses: actions/setup-node@v2
@@ -42,13 +42,16 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
       - name: Install dependencies
         run: npm install
 
-      - name: Iniciar el servidor #per a que funcione cypress iniciem el servidor
-        run: npm run dev &
-        env:
-          CI: true
-
-      - name: Iniciar Cypress tests
-        run: npm run cypress -- --reporter=json > results.txt || true #fem que genere el txt
+      - name: Cypress run
+        uses: cypress-io/github-actions@v5
+        with: 
+          config-file: cypress.json
+          build: npm run build
+          start: npm start
+        continue-on-error: true
+        id: cypress
+      - name: crear result.txt
+        run: echo ${{steps.cypress.outcome}} > result.txt
 
       - name: Crear artifact
         uses: actions/upload-artifact@v3
@@ -61,7 +64,7 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
     needs: Cypress_job  # Aquest job dependrà de Cypress_job
     steps:
       - name: Checkout codi
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       
       - name: Install dependencies for custom action
         run: |
@@ -95,7 +98,7 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
     needs: Cypress_job  
     steps:
       - name: Checkout del código
-        uses: actions/checkout@v2 
+        uses: actions/checkout@v4 
 
       - name: Desplegar en Vercel
         uses: amondnet/vercel-action@v20  #Action per a desplegar en Vercel
@@ -111,7 +114,7 @@ jobs: #Definim cada job y el sistema que utilitzará amb els pasos
     if: always()  # S' executa sempre encara que fallen altres jobs
     steps:
       - name: Checkout código
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Send Notification Email
         uses: peter-evans/send-mail@v2
